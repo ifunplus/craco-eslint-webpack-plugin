@@ -1,8 +1,8 @@
 /* eslint-disable import/no-extraneous-dependencies, import/no-unresolved */
-const {getLoader, removeLoaders, loaderByName} = require('@craco/craco');
-const ESLintPlugin = require('eslint-webpack-plugin');
+const {getPlugin, removePlugins, pluginByName} = require('@craco/craco');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const ESLINT_LOADER_NAME = 'eslint-loader';
+const PLUGIN_NAME = 'HtmlWebpackPlugin';
 
 module.exports = {
   overrideCracoConfig: ({cracoConfig, pluginOptions = {skipPreflightCheck: false}}) => {
@@ -11,15 +11,13 @@ module.exports = {
     return cracoConfig;
   },
 
-  overrideWebpackConfig: ({webpackConfig, pluginOptions = {eslintOptions: {}}}) => {
-    // Remove eslint-loader
-    const {isFound} = getLoader(webpackConfig, loaderByName(ESLINT_LOADER_NAME));
+  overrideWebpackConfig: ({webpackConfig, pluginOptions = {options: {}}}) => {
+    const {isFound} = getPlugin(webpackConfig, pluginByName(PLUGIN_NAME));
     if (isFound) {
-      removeLoaders(webpackConfig, loaderByName(ESLINT_LOADER_NAME));
+      removePlugins(webpackConfig, pluginByName(PLUGIN_NAME));
     }
 
-    // Add eslint-webpack-plugin
-    webpackConfig.plugins.push(new ESLintPlugin(pluginOptions.eslintOptions));
+    webpackConfig.plugins.push(new HtmlWebpackPlugin(pluginOptions.options));
 
     return webpackConfig;
   },
